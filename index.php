@@ -1,14 +1,14 @@
 <?php
-// Set the API URL
-$URL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
+$URL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges like 'IT' AND the_programs like 'bachelor'&limit=100";
 
 // Fetch the response
 $response = file_get_contents($URL);
 
-// Check if the response was successful
-if ($response === FALSE) {
-    die('Error occurred while fetching data');
-}
+// Debugging output
+echo "<pre>";
+echo htmlspecialchars($response); // Output the raw JSON response
+echo "</pre>";
+exit; // Stop further execution to inspect the output
 
 // Decode the JSON response to an associative array
 $result = json_decode($response, true);
@@ -18,13 +18,14 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     die('Error decoding JSON: ' . json_last_error_msg());
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Nationality Data</title>
-    <link rel="stylesheet" href="https://picocss.com/pico.min.css"> <!-- Pico CSS for styling -->
+    <link rel="stylesheet" href="https://picocss.com/pico.min.css">
 </head>
 <body>
     <div class="container">
@@ -38,13 +39,11 @@ if (json_last_error() !== JSON_ERROR_NONE) {
             </thead>
             <tbody>
                 <?php
-                // Loop through the result and display each entry in the table
                 if (isset($result['records']) && is_array($result['records'])) {
                     foreach ($result['records'] as $record) {
-                        // Update field names according to the API response structure
                         echo "<tr>";
-                        echo "<td>" . htmlspecialchars($record['fields']['nationality']) . "</td>";
-                        echo "<td>" . htmlspecialchars($record['fields']['number_of_students']) . "</td>";
+                        echo "<td>" . htmlspecialchars($record['fields']['nationality'] ?? 'N/A') . "</td>";
+                        echo "<td>" . htmlspecialchars($record['fields']['number_of_students'] ?? 'N/A') . "</td>";
                         echo "</tr>";
                     }
                 } else {

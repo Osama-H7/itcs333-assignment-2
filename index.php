@@ -37,6 +37,14 @@ if (json_last_error() !== JSON_ERROR_NONE) {
             text-align: center;
             color: #333;
         }
+        h2 {
+            color: #555;
+            text-align: center;
+        }
+        p {
+            text-align: center;
+            margin-bottom: 20px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -58,6 +66,8 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 <body>
     <div class="container">
         <h1>University of Bahrain Students Enrollment Data</h1>
+        <h2>Summary of Enrollment Figures</h2>
+        <p>This table summarizes the enrollment figures by nationality for various colleges at the University of Bahrain. Data shown only include entries with student enrollments greater than zero.</p>
         <table>
             <thead>
                 <tr>
@@ -72,13 +82,16 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                 <?php
                 if (isset($result['results']) && is_array($result['results'])) {
                     foreach ($result['results'] as $record) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($record['year']) . "</td>";
-                        echo "<td>" . htmlspecialchars($record['semester']) . "</td>";
-                        echo "<td>" . htmlspecialchars($record['nationality']) . "</td>";
-                        echo "<td>" . htmlspecialchars($record['colleges']) . "</td>";
-                        echo "<td>" . htmlspecialchars($record['number_of_students']) . "</td>";
-                        echo "</tr>";
+                        // Filter out records with zero students
+                        if ($record['number_of_students'] > 0) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($record['year']) . "</td>";
+                            echo "<td>" . htmlspecialchars($record['semester']) . "</td>";
+                            echo "<td>" . htmlspecialchars($record['nationality']) . "</td>";
+                            echo "<td>" . htmlspecialchars($record['colleges']) . "</td>";
+                            echo "<td>" . htmlspecialchars($record['number_of_students']) . "</td>";
+                            echo "</tr>";
+                        }
                     }
                 } else {
                     echo "<tr><td colspan='5'>No data available.</td></tr>";
